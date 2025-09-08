@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Scraped Countries</title>
+</head>
+<body>
+       <nav>
+        <a href="{% url 'index' %}">Home</a> |
+        <a href="{% url 'countries' %}">Countries</a>
+    </nav>
+    <h1>Countries (Scraped)</h1>
+    <table border="1" cellpadding="8">
+        <tr>
+            <th>Country</th>
+            
+        </tr>
+        {% for country in countries %}
+        <tr>
+            <td>{{ country.name }}</td>
+            
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
