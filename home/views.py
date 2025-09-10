@@ -14,9 +14,11 @@ def scrape_countries(request):
     countries = []
     for country in soup.find_all("div",class_="country"):
         name = country.find("h3",class_="country-name").get_text(strip=True)
+        capital = country.find("h3",class_="country-capital").get_text(strip=True)
 
         countries.append({
-            "name": name
+            "name": name,
+            "capital":capital
         })
     return render(request,"home/countries.html", {"countries":countries})
 
