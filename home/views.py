@@ -2,6 +2,7 @@ from django.shortcuts import redirect, render
 from bs4 import BeautifulSoup
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 import requests
 # Create your views here.
 def index(request):
@@ -38,3 +39,12 @@ def register(request):
     else:
         form = UserCreationForm()
     return render(request, "registration/register.html", {"form": form})
+
+
+
+
+
+
+@login_required
+def loggedin(request):
+    return render(request, "home/loggedin.html", {"username": request.user.username})
