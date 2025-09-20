@@ -5,6 +5,9 @@ import requests
 def index(request):
     return render(request, 'home/index.html')
 
+def stjoes(request):
+    return render(request, 'home/stjoes.html')
+
 def scrape_countries(request):
     url = "https://www.scrapethissite.com/pages/simple/"
     response = requests.get(url)
@@ -14,11 +17,11 @@ def scrape_countries(request):
     countries = []
     for country in soup.find_all("div",class_="country"):
         name = country.find("h3",class_="country-name").get_text(strip=True)
-        capital = country.find("h3",class_="country-capital").get_text(strip=True)
+        
 
         countries.append({
             "name": name,
-            "capital":capital
+            
         })
     return render(request,"home/countries.html", {"countries":countries})
 
