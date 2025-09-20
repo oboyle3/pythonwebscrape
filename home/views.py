@@ -1,5 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from bs4 import BeautifulSoup
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
 import requests
 # Create your views here.
 def index(request):
@@ -25,3 +27,14 @@ def scrape_countries(request):
         })
     return render(request,"home/countries.html", {"countries":countries})
 
+
+def register(request):
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)  # auto-login after registration
+            return redirect("index")
+    else:
+        form = UserCreationForm()
+    return render(request, "registration/register.html", {"form": form})
