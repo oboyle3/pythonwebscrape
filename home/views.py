@@ -4,6 +4,9 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 import requests
+
+from home.forms import AvailabilityForm
+from home.models import Availability
 # Create your views here.
 def index(request):
     return render(request, 'home/index.html')
@@ -47,4 +50,25 @@ def register(request):
 
 @login_required
 def loggedin(request):
-    return render(request, "home/loggedin.html", {"username": request.user.username})
+    user = request.user
+
+    # Get or create the current availability
+    try:
+        current_availability = Availability.objects.get(user=user)
+    except Availability.DoesNotExist:
+        current_availability = None
+
+    if request.method == "POST":
+        form = AvailabilityForm(request.POST, instance=current_availability)
+        if form.is_valid():
+            availability = form.save(commit=False)
+            availability.user = user
+            availability.save()
+            return redirect("loggedin")  # refresh page after saving
+    else:
+        form = AvailabilityForm(instance=current_availability)
+
+    return render(request, "home/loggedin.html", {
+        "username": user.username,
+        "form": form,
+    })

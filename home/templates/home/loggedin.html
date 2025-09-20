@@ -1,11 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Welcome you are logged in</title>
+    <title>Welcome</title>
 </head>
 <body>
     <h2>Welcome, {{ username }}!</h2>
     <p>You are successfully logged in.</p>
-    <p><a href="{% url 'logout' %}">Logout</a></p>
+
+    <hr>
+    <h3>Set Your Weekend Availability</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save Availability</button>
+    </form>
+
+    {% if form.instance.time_slot %}
+        <p>Your current selection: <strong>{{ form.instance.get_time_slot_display }}</strong></p>
+    {% endif %}
+
+    <hr>
+    <nav>
+        <a href="{% url 'index' %}">Logout</a> |
+        <a href="{% url 'countries' %}">Countries</a> |
+       
+    </nav>
 </body>
 </html>
