@@ -5,8 +5,8 @@ from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 import requests
 
-from home.forms import AvailabilityForm
-from home.models import Availability
+from home.forms import AvailabilityForm, TeamForm
+from home.models import Availability, Profile
 # Create your views here.
 def index(request):
     return render(request, 'home/index.html')
@@ -47,28 +47,40 @@ def register(request):
 
 
 
-
 @login_required
 def loggedin(request):
     user = request.user
 
-    # Get or create the current availability
+    # Availability logic
     try:
         current_availability = Availability.objects.get(user=user)
     except Availability.DoesNotExist:
         current_availability = None
 
-    if request.method == "POST":
+    if request.method == "POST" and "availability_submit" in request.POST:
         form = AvailabilityForm(request.POST, instance=current_availability)
         if form.is_valid():
             availability = form.save(commit=False)
             availability.user = user
             availability.save()
-            return redirect("loggedin")  # refresh page after saving
+            return redirect("loggedin")
     else:
         form = AvailabilityForm(instance=current_availability)
+
+    # Favorite team logic
+    profile, created = Profile.objects.get_or_create(user=user)
+    if request.method == "POST" and "team_submit" in request.POST:
+        team_form = TeamForm(request.POST, instance=profile)
+        if team_form.is_valid():
+            team_form.save()
+            print("hello")
+            return redirect("loggedin")
+    else:
+        team_form = TeamForm(instance=profile)
 
     return render(request, "home/loggedin.html", {
         "username": user.username,
         "form": form,
+        "team_form": team_form,
+        "profile": profile,
     })

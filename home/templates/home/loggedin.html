@@ -7,12 +7,36 @@
     <h2>Welcome, {{ username }}!</h2>
     <p>You are successfully logged in.</p>
 
+    <!-- Container for the two sections (Favorite Team & Availability) -->
+    <div style="display: flex; justify-content: space-between;">
+        <!-- Favorite Team Section -->
+        <div style="width: 48%;">
+            <h3>Your Favorite Team</h3>
+            {% if profile.favorite_team %}
+                <p><strong>{{ profile.get_favorite_team_display }}</strong></p>
+            {% else %}
+                <p>You haven’t picked a favorite team yet.</p>
+            {% endif %}
+        </div>
+
+        <!-- Availability Section -->
+        <div style="width: 48%;">
+            <h3>Your Availability</h3>
+            {% if form.instance.time_slot %}
+                <p><strong>{{ form.instance.get_time_slot_display }}</strong></p>
+            {% else %}
+                <p>You haven’t set your availability yet.</p>
+            {% endif %}
+        </div>
+    </div>
+
     <hr>
-    <h3>Set Your Weekend Availability</h3>
+
+    <h3>Update Your Availability</h3>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Save Availability</button>
+        <button type="submit" name="availability_submit">Save Availability</button>
     </form>
 
     {% if form.instance.time_slot %}
@@ -20,10 +44,24 @@
     {% endif %}
 
     <hr>
+
+    <h3>Choose Your Favorite Football Team</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ team_form.as_p }}
+        <button type="submit" name="team_submit">Save Favorite Team</button>
+    </form>
+
+    {% if profile.favorite_team %}
+        <p>Your favorite team: <strong>{{ profile.get_favorite_team_display }}</strong></p>
+    {% endif %}
+
+    <hr>
+
     <nav>
-        <a href="{% url 'index' %}">Logout</a> |
+        <a href="{% url 'index' %}">Home</a> |
         <a href="{% url 'countries' %}">Countries</a> |
-       
+        <a href="{% url 'logout' %}">Logout</a>
     </nav>
 </body>
 </html>
