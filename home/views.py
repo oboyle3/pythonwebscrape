@@ -2,6 +2,7 @@ from django.shortcuts import redirect, render
 from bs4 import BeautifulSoup
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
+from .models import BankAccount
 from django.contrib.auth.decorators import login_required
 import requests
 
@@ -83,4 +84,16 @@ def loggedin(request):
         "form": form,
         "team_form": team_form,
         "profile": profile,
+    })
+
+
+
+
+
+@login_required
+def loggedin(request):
+    account = BankAccount.objects.get(user=request.user)
+    return render(request, 'home/loggedin.html', {
+        'username': request.user.username,
+        'balance': account.balance,
     })

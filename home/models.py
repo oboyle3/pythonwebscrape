@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class Availability(models.Model):
     TIME_SLOTS = [
@@ -28,3 +30,19 @@ class Profile(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.get_favorite_team_display() if self.favorite_team else 'No Team'}"
+
+
+
+class BankAccount(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    balance = models.DecimalField(max_digits=10, decimal_places=2, default=100.00)
+
+    def __str__(self):
+        return f"{self.user.username}'s Bank Account - Balance: {self.balance}"
+    
+
+@receiver(post_save, sender=User)
+def create_bank_account(sender, instance, created, **kwargs):
+    if created:
+        BankAccount.objects.create(user=instance)
+    
