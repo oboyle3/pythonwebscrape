@@ -58,6 +58,14 @@
     {% endif %}
 
     <hr>
+    <h3>Your Favorite Golfers:</h3>
+<ul>
+  {% for golfer in request.user.userprofile.favorite_golfers.all %}
+    <li>{{ golfer.name }} ({{ golfer.country }})</li>
+  {% empty %}
+    <li>No favorites selected yet.</li>
+  {% endfor %}
+</ul>
 
     <nav>
         <a href="{% url 'index' %}">Home</a> |

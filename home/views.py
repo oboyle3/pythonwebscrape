@@ -2,11 +2,11 @@ from django.shortcuts import redirect, render
 from bs4 import BeautifulSoup
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
-from .models import BankAccount
+from .models import BankAccount, UserProfile
 from django.contrib.auth.decorators import login_required
 import requests
 
-from home.forms import AvailabilityForm, TeamForm
+from home.forms import AvailabilityForm, FavoriteGolferForm, TeamForm
 from home.models import Availability, Profile
 # Create your views here.
 def index(request):
@@ -97,3 +97,19 @@ def loggedin(request):
         'username': request.user.username,
         'balance': account.balance,
     })
+
+
+
+
+def select_favorites(request):
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+
+    if request.method == 'POST':
+        form = FavoriteGolferForm(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect('html/loggedin')  # or wherever you want
+    else:
+        form = FavoriteGolferForm(instance=profile)
+
+    return render(request, 'home/select_favorites.html', {'form': form})

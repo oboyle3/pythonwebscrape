@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>select page </title>
+</head>
+<body>
+     <nav>
+        <a href="{% url 'index' %}">Home</a> |
+        <a href="{% url 'countries' %}">Countries</a> |
+        <a href="{% url 'stjoes' %}">St. Joes</a> |
+        <a href="{% url 'register' %}">Register</a> |
+        <a href="{% url 'login' %}">Login</a> |
+    </nav>
+    <h1>favorite golfer</h1>
+    <h2>Select Your Favorite Golfers</h2>
+
+<form method="POST">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Save</button>
+</form>
+</body>
+</html>
